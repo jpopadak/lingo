@@ -1,42 +1,42 @@
 package core
 
+
+// ========== NAME ==========
 type Name interface {
-	GetName() string
+	Name() string
 }
-
+// ========== ALIAS ==========
 type Alias interface {
-	GetAlias() string
+	Name() string
+	Alias() string
 }
 
-type Table interface {
-	Expression
-	Alias
-	Name
-	GetColumns() []Column
-	GetParent() string
+// ========== DIALECT ==========
+type Dialect interface {
+	Select(n ...Name) SelectClause
 }
 
-type Column interface {
-	Expression
-	Alias
-	Name
-	GetParent() Table
+// ==================================================
+type SelectClause interface {
+	FromTable(n Name) JoinClause
 }
 
-type Expression interface {
-	GetSQL(sql string) error
+// ==================================================
+type JoinClause interface {
+	LeftJoinOn() JoinClause
+	RightJoinOn() JoinClause
+	Where() WhereClause
+}
+type WhereClause interface {
+	And()
+	Or()
 }
 
-type Set interface {
-	Expression
-}
+// ==================================================
 
-type OrderBy interface {
-	Expression
-}
-
-type ComboExpression interface {
-	Expression
-	And(Expression) ComboExpression
-	Or(Expression) ComboExpression
+func doThings() {
+	var d Dialect = mysql{}
+	var tRG = TResourceGroup{}
+	var tRR = TResourceReference{}
+	d.Select(tRG.).FromTable(t).LeftJoinOn().Where()
 }
